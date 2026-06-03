@@ -1,0 +1,76 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. O PAI (O cabeçalho da avaliação daquela planta)
+model SessaoAvaliacao {
+  id String @id @default(uuid()) 
+
+  
+  mobileSessaoId String  
+
+  
+  lote          String
+  planta        Int
+  centroCusto   String
+  nomeAvaliador String?
+  criadoEm      DateTime 
+  sincronizadoEm DateTime @default(now())
+
+  // RELAÇÕES 
+  avaliacoes RegistroAvaliacao[]
+  relatorios RelatorioConsolidado[]
+
+  @@map("sessoes_avaliacao")
+}
+
+// 2. OS FILHOS (Notas Brutas)
+model RegistroAvaliacao {
+  id String @id @default(uuid())
+
+  // Vínculo com o Pai
+  sessaoId String
+  sessao   SessaoAvaliacao @relation(fields: [sessaoId], references: [id], onDelete: Cascade)
+
+  // Dados Específicos da Nota
+  doencaOuPraga String
+  orgao         String
+  quadrante     String?
+  ramo          String?
+  
+  identificadorDeLocal String?
+  numeroLocal          Int?
+  
+  nota          Float   @default(0)
+  
+  // GPS Específico desta nota 
+  latitude      Float?
+  longitude     Float?
+  accuracy      Float?
+
+  @@map("avaliacoes_detalhes")
+}
+
+// 3. OS RESULTADOS (Porcentagens Calculadas)
+model RelatorioConsolidado {
+  id String @id @default(uuid())
+
+  // Vínculo com o Pai
+  sessaoId String
+  sessao   SessaoAvaliacao @relation(fields: [sessaoId], references: [id], onDelete: Cascade)
+
+  doencaOuPraga String
+  orgao         String
+  
+  porcentagem   Float
+  totalNotas    Int?
+
+  @@map("relatorios_consolidados")
+}
