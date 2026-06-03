@@ -264,73 +264,54 @@ export default function HomePage() {
             <p className="text-gray-500 text-sm mt-1">Tente ajustar os filtros de data ou busca.</p>
           </div>
         ) : (
-          LISTA_FAZENDAS.map(fazenda => {
-            // Ordena numericamente pelo número ao final do nome
-            const locaisDaFazenda = locaisProcessados
-              .filter(local => local.name.includes(fazenda.valor))
-              .sort((a, b) => {
-                // Extrai o último número do nome (ex: "GV-F1 MANGA PALMER 17.2" -> 17.2)
-                const numA = parseFloat((a.name.match(/(\d+[.,]?\d*)$/) || [])[0]?.replace(',', '.') || '0');
-                const numB = parseFloat((b.name.match(/(\d+[.,]?\d*)$/) || [])[0]?.replace(',', '.') || '0');
-                return numA - numB;
-              });
-            if (locaisDaFazenda.length === 0) return null;
-            return (
-              <div key={fazenda.valor} className="mb-10">
-                <h2 className="text-xl font-extrabold text-green-800 mb-4 mt-2 pl-2 border-l-4 border-green-400 py-1">
-                  {fazenda.label}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  {locaisDaFazenda.map((local) => (
-                    <div
-                      key={local.id}
-                      onClick={() => router.push(`/local/${encodeURIComponent(local.centroCusto)}`)}
-                      className="group bg-white rounded-2xl border border-gray-100 p-0 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:border-emerald-400 hover:ring-2 hover:ring-emerald-100/60 overflow-hidden"
-                      title={`Ver detalhes de ${local.name}`}
-                    >
-                      {/* Header do Card */}
-                      <div className="p-5 pb-3">
-                        <div className="flex justify-between items-start mb-3">
-                          <span className="bg-green-50 text-green-700 text-xs font-mono font-semibold px-2 py-1 rounded-md border border-green-100 flex items-center gap-2">
-                            <MapPin size={16} className="text-green-700" />
-                            CC: {local.centroCusto}
-                          </span>
-                          {local.status === 'recente' ? (
-                            <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-white bg-linear-to-r from-green-500 to-green-700 px-2 py-1 rounded-full border border-green-200 shadow-md animate-pulse">
-                              <CheckCircle2 size={16} /> Ativo
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full border border-yellow-200 shadow-sm">
-                              <Clock size={16} /> Antigo
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="text-green-900 font-extrabold text-2xl leading-tight line-clamp-2 group-hover:text-green-700 transition-colors flex items-center gap-2">
-                          <BarChart3 size={20} className="text-green-700" />
-                          <span className="text-lg md:text-xl font-bold">{local.name}</span>
-                        </h3>
-                      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {locaisProcessados.map((local) => (
+              <div
+                key={local.id}
+                onClick={() => router.push(`/local/${encodeURIComponent(local.centroCusto)}`)}
+                className="group bg-white rounded-2xl border border-gray-100 p-0 cursor-pointer transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:border-emerald-400 hover:ring-2 hover:ring-emerald-100/60 overflow-hidden"
+                title={`Ver detalhes de ${local.name}`}
+              >
+                {/* Header do Card */}
+                <div className="p-5 pb-3">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="bg-green-50 text-green-700 text-xs font-mono font-semibold px-2 py-1 rounded-md border border-green-100 flex items-center gap-2">
+                      <MapPin size={16} className="text-green-700" />
+                      CC: {local.centroCusto}
+                    </span>
+                    {local.status === 'recente' ? (
+                      <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-white bg-linear-to-r from-green-500 to-green-700 px-2 py-1 rounded-full border border-green-200 shadow-md animate-pulse">
+                        <CheckCircle2 size={16} /> Ativo
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full border border-yellow-200 shadow-sm">
+                        <Clock size={16} /> Antigo
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-green-900 font-extrabold text-2xl leading-tight line-clamp-2 group-hover:text-green-700 transition-colors flex items-center gap-2">
+                    <BarChart3 size={20} className="text-green-700" />
+                    <span className="text-lg md:text-xl font-bold">{local.name}</span>
+                  </h3>
+                </div>
 
-                      {/* Footer do Card */}
-                      <div className="px-5 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span className="text-xs text-gray-600 font-semibold">Última avaliação</span>
-                          <span className="text-base font-bold text-green-800 flex items-center gap-1.5">
-                            <Calendar size={18} className="text-green-600" />
-                            {local.ultimaData ? new Date(local.ultimaData).toLocaleDateString('pt-BR') : '-'}
-                          </span>
-                        </div>
+                {/* Footer do Card */}
+                <div className="px-5 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-600 font-semibold">Última avaliação</span>
+                    <span className="text-base font-bold text-green-800 flex items-center gap-1.5">
+                      <Calendar size={18} className="text-green-600" />
+                      {local.ultimaData ? new Date(local.ultimaData).toLocaleDateString('pt-BR') : '-'}
+                    </span>
+                  </div>
 
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-r from-green-200 to-green-400 border border-green-300 shadow-lg text-green-700 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-600 transition-all" title="Acessar detalhes">
-                          <ArrowRight size={22} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-r from-green-200 to-green-400 border border-green-300 shadow-lg text-green-700 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-600 transition-all" title="Acessar detalhes">
+                    <ArrowRight size={22} />
+                  </div>
                 </div>
               </div>
-            );
-          })
+            ))}
+          </div>
         )}
       </div>
     </main>
